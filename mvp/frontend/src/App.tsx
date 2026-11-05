@@ -23,7 +23,7 @@ function App() {
 
   const [type, setType] = useState<'ENTRADA' | 'SALIDA'>('ENTRADA');
   const [sku, setSku] = useState<string>('CONT-001');
-  const [quantity, setQuantity] = useState<number>(10);
+  const [quantity, setQuantity] = useState<string>('10');
   const [responsible, setResponsible] = useState<string>('Carlos');
 
   const fetchData = async () => {
@@ -60,7 +60,10 @@ function App() {
       fetchData();
     } catch (error) {
       console.error('Error al registrar movimiento:', error);
-      alert('Hubo un error al registrar el movimiento');
+      const errorMessage = axios.isAxiosError(error)
+        ? error.response?.data?.message || 'Hubo un error al registrar el movimiento'
+        : 'Hubo un error al registrar el movimiento';
+      alert(errorMessage);
     }
   };
 
@@ -110,7 +113,7 @@ function App() {
               <input
                 type="number"
                 value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
+                onChange={(e) => setQuantity(e.target.value)}
                 min="1"
                 required
                 className={styles.input}

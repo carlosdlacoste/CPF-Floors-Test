@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 
 // Definimos la estructura de un Producto y un Movimiento
 export interface Product {
@@ -43,6 +43,19 @@ export class AppService {
 
   // 3. Registrar un nuevo Movimiento (Entrada o Salida)
   addMovement(movementData: Omit<Movement, 'id'>): Movement {
+    if (movementData.type === 'SALIDA') {
+      const currentStock = this.getStockStatus();
+      const productStock = currentStock.find(item => item.sku === movementData.sku);
+
+      const available = productStock ? productStock.stockDisponible : 0;
+
+      if (available < movementData.quantity) {
+        throw new BadRequestException(
+          `Stock insuficiente para el SKU ${movementData.sku}. Disponible: ${available}, solicitado: ${movementData.quantity}`
+        );
+      }
+    }
+
     const newId = this.movements.length + 1;
     const newMovement: Movement = { id: newId, ...movementData };
     this.movements.push(newMovement);
