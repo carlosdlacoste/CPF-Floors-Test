@@ -86,4 +86,4 @@ En la carpeta `/contingency` encontrarás la solucion de inteligencia operativa:
 
 En la carpeta `/proposal` encontrarás la propuesta estructurada para la solucion a largo plazo:
 
-* `propuesta-arquitectura.md`: Hoja de ruta estratégica para la evolución del sistema a mediano/largo plazo (ERP/WMS, automatizaciones con n8n e integración con IA).
+* `architecture-proposal.md`: Hoja de ruta estratégica para la evolución del sistema a mediano/largo plazo (ERP/WMS, automatizaciones con n8n e integración con IA).
