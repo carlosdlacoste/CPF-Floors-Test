@@ -128,7 +128,7 @@ function App() {
               />
             </div>
 
-            <div style={{ gridColumn: '1 / -1', marginTop: '5px' }}>
+            <div style={{ gridColumn: '1 / -1', marginTop: '5px', display: 'flex', justifyContent: 'center' }}>
               <button type="submit" className={styles.button}>
                 Guardar Movimiento
               </button>
