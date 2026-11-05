@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import axios from 'axios';
+import styles from './App.module.css';
 
 interface StockItem {
   sku: string;
@@ -20,13 +21,11 @@ function App() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Estados para el formulario de nuevo movimiento
   const [type, setType] = useState<'ENTRADA' | 'SALIDA'>('ENTRADA');
   const [sku, setSku] = useState<string>('CONT-001');
   const [quantity, setQuantity] = useState<number>(10);
   const [responsible, setResponsible] = useState<string>('Carlos');
 
-  // Función para cargar los datos del backend
   const fetchData = async () => {
     try {
       const [stockRes, productsRes] = await Promise.all([
@@ -46,7 +45,6 @@ function App() {
     fetchData();
   }, []);
 
-  // Manejar el envío del formulario
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
@@ -58,7 +56,6 @@ function App() {
         responsible,
       });
 
-      // Limpiar y recargar los datos para ver el stock actualizado al instante
       alert('Movimiento registrado con éxito');
       fetchData();
     } catch (error) {
@@ -68,96 +65,116 @@ function App() {
   };
 
   return (
-    <div style={{ padding: '30px', fontFamily: 'Arial, sans-serif', maxWidth: '900px', margin: '0 auto' }}>
-      <h1>📦 Sistema de Inventario - Juliam Corp</h1>
-      <p>Panel de control logístico en tiempo real.</p>
+    <div className={styles.container}>
+      <div className={styles.wrapper}>
+        
+        {/* Encabezado */}
+        <header className={styles.header}>
+          <h1 className={styles.title}>📦 Sistema de Inventario — Juliam Corp</h1>
+          <p className={styles.subtitle}>Panel de control logístico y seguimiento de stock en tiempo real.</p>
+        </header>
 
-      {/* Formulario para registrar entradas/salidas */}
-      <div style={{ background: '#f9f9f9', padding: '20px', borderRadius: '8px', marginBottom: '30px', border: '1px solid #ddd' }}>
-        <h3>Registrar Nuevo Movimiento</h3>
-        <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-          <div>
-            <label style={{ display: 'block', marginBottom: '5px' }}>Tipo de Movimiento:</label>
-            <select value={type} onChange={(e) => setType(e.target.value as 'ENTRADA' | 'SALIDA')} style={{ width: '100%', padding: '8px' }}>
-              <option value="ENTRADA">ENTRADA (Compra / Ingreso)</option>
-              <option value="SALIDA">SALIDA (Despacho / Consumo)</option>
-            </select>
-          </div>
+        {/* Formulario de Movimientos */}
+        <div className={styles.card}>
+          <h3 className={styles.cardTitle}>Registrar Nuevo Movimiento</h3>
+          <form onSubmit={handleSubmit} className={styles.formGrid}>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Tipo de Movimiento:</label>
+              <select
+                value={type}
+                onChange={(e) => setType(e.target.value as 'ENTRADA' | 'SALIDA')}
+                className={styles.select}
+              >
+                <option value="ENTRADA">ENTRADA (Ingreso)</option>
+                <option value="SALIDA">SALIDA (Despacho)</option>
+              </select>
+            </div>
 
-          <div>
-            <label style={{ display: 'block', marginBottom: '5px' }}>Producto (SKU):</label>
-            <select value={sku} onChange={(e) => setSku(e.target.value)} style={{ width: '100%', padding: '8px' }}>
-              {products.map((p) => (
-                <option key={p.sku} value={p.sku}>
-                  {p.name} ({p.sku})
-                </option>
-              ))}
-            </select>
-          </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Producto (SKU):</label>
+              <select
+                value={sku}
+                onChange={(e) => setSku(e.target.value)}
+                className={styles.select}
+              >
+                {products.map((p) => (
+                  <option key={p.sku} value={p.sku}>
+                    {p.name} ({p.sku})
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          <div>
-            <label style={{ display: 'block', marginBottom: '5px' }}>Cantidad:</label>
-            <input
-              type="number"
-              value={quantity}
-              onChange={(e) => setQuantity(Number(e.target.value))}
-              min="1"
-              style={{ width: '100%', padding: '8px' }}
-              required
-            />
-          </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Cantidad:</label>
+              <input
+                type="number"
+                value={quantity}
+                onChange={(e) => setQuantity(Number(e.target.value))}
+                min="1"
+                required
+                className={styles.input}
+              />
+            </div>
 
-          <div>
-            <label style={{ display: 'block', marginBottom: '5px' }}>Responsable:</label>
-            <input
-              type="text"
-              value={responsible}
-              onChange={(e) => setResponsible(e.target.value)}
-              style={{ width: '100%', padding: '8px' }}
-              required
-            />
-          </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Responsable:</label>
+              <input
+                type="text"
+                value={responsible}
+                onChange={(e) => setResponsible(e.target.value)}
+                required
+                className={styles.input}
+              />
+            </div>
 
-          <div style={{ gridColumn: 'span 2' }}>
-            <button type="submit" style={{ background: '#0070f3', color: '#fff', padding: '10px 20px', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
-              Guardar Movimiento
-            </button>
-          </div>
-        </form>
+            <div style={{ gridColumn: '1 / -1', marginTop: '5px' }}>
+              <button type="submit" className={styles.button}>
+                Guardar Movimiento
+              </button>
+            </div>
+          </form>
+        </div>
+
+        {/* Tabla de Estado del Inventario */}
+        <div className={styles.card}>
+          <h3 className={styles.cardTitle}>Estado Actual del Inventario</h3>
+          
+          {loading ? (
+            <p className={styles.subtitle}>Cargando inventario...</p>
+          ) : (
+            <div className={styles.tableContainer}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th className={styles.th}>SKU</th>
+                    <th className={styles.th}>Producto</th>
+                    <th className={`${styles.th} ${styles.textCenter}`}>Entradas</th>
+                    <th className={`${styles.th} ${styles.textCenter}`}>Salidas</th>
+                    <th className={`${styles.th} ${styles.textCenter}`}>Stock Disponible</th>
+                    <th className={`${styles.th} ${styles.textCenter}`}>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stock.map((item) => (
+                    <tr key={item.sku}>
+                      <td className={`${styles.td} ${styles.fwBold}`}>{item.sku}</td>
+                      <td className={styles.td}>{item.name}</td>
+                      <td className={`${styles.td} ${styles.textCenter}`}>{item.totalEntradas}</td>
+                      <td className={`${styles.td} ${styles.textCenter}`}>{item.totalSalidas}</td>
+                      <td className={`${styles.td} ${styles.textCenter} ${styles.fwBold}`}>{item.stockDisponible}</td>
+                      <td className={`${styles.td} ${styles.textCenter} ${item.estado.includes('REABASTECER') ? styles.statusAlert : styles.statusOk}`}>
+                        {item.estado}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
       </div>
-
-      {/* Tabla de Stock Actual */}
-      <h3>Estado Actual del Inventario</h3>
-      {loading ? (
-        <p>Cargando inventario...</p>
-      ) : (
-        <table border={1} cellPadding={10} style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f4f4f4' }}>
-              <th>SKU</th>
-              <th>Producto</th>
-              <th>Entradas</th>
-              <th>Salidas</th>
-              <th>Stock Disponible</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {stock.map((item) => (
-              <tr key={item.sku}>
-                <td>{item.sku}</td>
-                <td>{item.name}</td>
-                <td>{item.totalEntradas}</td>
-                <td>{item.totalSalidas}</td>
-                <td><strong>{item.stockDisponible}</strong></td>
-                <td style={{ color: item.estado.includes('REABASTECER') ? 'red' : 'green', fontWeight: 'bold' }}>
-                  {item.estado}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
     </div>
   );
 }
